@@ -1,0 +1,78 @@
+\documentclass{report}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+
+\title{Assignment 5}
+\author{Tikei Radovac, Aleš Špeh}
+\date{May 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+For this assignment, we chose to implement and compare several optimization algorithms: Simulated Annealing, Tabu Search, Whale Optimization Algorithm, Differential Evolution, and Random Search. Our goal was to test and analyze their performance on a set of benchmark functions with 20 dimensions.
+
+\section*{Simulated Annealing}
+
+Simulated annealing is an optimization method designed to find the best or nearly best solution within a large and complex search space, where it would take too long to get the exact solution. The algorithm and its name are inspired by the annealing process in metallurgy, where a material is slowly cooled. Like in metallurgy, here we have a value (temperature) that is slowly decreasing. This approach is generally better than standard techniques, such as gradient descent, because it can escape local optima. By incorporating controlled randomness, it explores the solution space more effectively and avoids getting stuck in suboptimal regions.
+
+
+The algorithm begins with a "temperature" that decreases with time (there are several ways to decrease the temperature, geometric cooling being the most common). Initially, the algorithm selects a random value, and at each step, a new solution is chosen "near" (in its neighborhood) the current value. If the new solution (value of the objective function) is better, it is accepted. If the new solution is worse, there is a small probability (dependent on the current temperature) that it will still be accepted. This helps the algorithm escape local optima. The acceptance probability is given by:
+
+\[
+P = \exp\left(-\frac{\Delta E}{T}\right)
+\]
+
+where \(\Delta E\) is the increase in cost (that is, the new solution is worse), and \(T\) is the current temperature.
+
+\subsection*{Implementation}
+
+For the optimization of the 12 functions of the assignment, we used a slight variation of the Simulated Annealing algorithm. Our version uses the temperature not only for acceptance probability but also to control the step size calculated:
+
+\[
+\text{step\_size} = 0.1 \cdot \left(\frac{T}{T_{\text{init}}}\right)
+\]
+
+where \(T\) is the current temperature and \(T_{\text{init}}\) is the initial temperature. This means that when the temperature is high, the algorithm explores a larger neighborhood and when it is low, the search becomes more localized. The temperature decreases logarithmically according to the following formula:
+
+\[
+T = \frac{T_{\text{init}}}{1 + \log(1 + \text{iteration})}
+\]
+
+The algorithm also includes re-annealing, which increases the temperature if the search gets stuck in a local optimum. When this happens, the temperature increases by a factor of 1.2, and a new solution is randomly chosen from the entire search space. Initially, we tried choosing a new point only in the neighborhood of the current solution, but through testing, we found that restarting with a fully random solution worked better. This further improves the algorithm’s ability to escape local optima.
+
+The algorithm stops either when the temperature reaches the final value or when the maximum number of iterations is reached.
+
+The function takes as arguments the objective function, the initial temperature, the final temperature, the maximum number of iterations (though it may stop earlier if the final temperature is reached), and the re-anneal interval, which defines how many iterations the algorithm runs before increasing the temperature and choosing a new, random solution.
+
+\section*{Tabu Search}
+
+Tabu Search is a metaheuristic optimization algorithm used to enhance local search algorithms with the ability to escape local optima. The algorithm iteratively explores the neighborhood to find improved solutions while avoiding recently visited points stored in the tabu list, allowing it to explore a broader area of the search space. It is generally better for discrete problems because the concept of "moves" and memory-based restrictions (like the tabu list) naturally align with discrete changes, such as swapping elements or assigning values.
+
+Tabu Search starts with a random point and an empty tabu list. We set the number of iterations the algorithm will perform, and then, in each iteration, we generate a certain number of neighbours. The algorithm tries to find a better solution than the current one, but it also keeps a tabu list (short-term memory) of recently visited solutions or moves, to prevent going back to them.
+
+\subsection*{Implementation}
+
+We tried to keep our implementation of tabu search as standard as possible, with one key exception: instead of checking whether an exact point is in the tabu list, we rejected points that were within a certain Euclidean distance from any point in the tabu list. This modification is more suitable for continuous optimization, where visiting the exact same point is unlikely.
+
+The tabu search function takes several arguments: the objective function to optimize, the number of iterations to run, the maximum size of the tabu list, the size of the neighborhood to explore in each iteration, and the tabu threshold — which defines how close a new point can be to a tabu point before being rejected.
+
+\section*{Random Search}
+
+\section*{Whale Algorithm}
+
+\section*{Differential Evolution}
+
+\section*{Results}
+
+\subsection*{Simulated Annealing}
+\subsection*{Tabu Search}
+\subsection*{Random Search}
+\subsection*{Whale Algorithm}
+\subsection*{Differential Evolution}
+
+\section*{Conclusion}
+
+\end{document}
