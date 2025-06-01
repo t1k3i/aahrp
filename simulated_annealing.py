@@ -33,7 +33,7 @@ def test_simulated_annealing(functions):
     print("Results saved to aimulated_annealing_coordinates.txt")
     print()
 
-def simulated_annealing(function, t_init=1.0, t_final=1e-5, max_iter=5000, reanneal_interval=1000):
+def simulated_annealing(function, t_init=1.0, t_final=1e-5, max_iter=500000, reanneal_interval=1000):
     func = function(ndim=20)
     lower = np.array(func.lb)
     upper = np.array(func.ub)
